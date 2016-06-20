@@ -48,20 +48,34 @@
 	
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(38);
+	var Tabs = __webpack_require__(168);
+	var WeatherClock = __webpack_require__(169);
+	var Autocomplete = __webpack_require__(170);
 	
-	var MyComponent = React.createClass({
-	  displayName: 'MyComponent',
+	var tabContent = [{ title: "My Title", content: "body body body" }, { title: "My 2nd Title", content: "2nd body body body" }, { title: "My 3rd Title", content: "3rd body body body" }];
+	
+	var ACNames = ["Abbey", "Abe", "Abby", "Ace", "Aliza", "Bob", "Charles", "Dylan", "Evan", "Finn", "Gail", "Henry"];
+	
+	var Widgets = React.createClass({
+	  displayName: 'Widgets',
 	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      null,
-	      'Hello World'
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Widgets Header'
+	      ),
+	      React.createElement(Autocomplete, { names: ACNames }),
+	      React.createElement(WeatherClock, { componentDidMount: true }),
+	      React.createElement(Tabs, { tabContent: tabContent })
 	    );
 	  }
 	});
 	
 	document.addEventListener("DOMContentLoaded", function () {
-	  ReactDOM.render(React.createElement(MyComponent, null), document.getElementById('main'));
+	  ReactDOM.render(React.createElement(Widgets, null), document.getElementById('main'));
 	});
 
 /***/ },
@@ -20356,6 +20370,233 @@
 	var ReactMount = __webpack_require__(160);
 	
 	module.exports = ReactMount.renderSubtreeIntoContainer;
+
+/***/ },
+/* 168 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	
+	var Tabs = React.createClass({
+	  displayName: 'Tabs',
+	
+	  getInitialState: function getInitialState() {
+	    return { selectedTab: 0 };
+	  },
+	
+	  render: function render() {
+	    var _this = this;
+	
+	    return React.createElement(
+	      'ul',
+	      null,
+	      this.props.tabContent.map(function (tab, i) {
+	        var tabHeader = void 0;
+	        if (i === _this.state.selectedTab) {
+	          tabHeader = React.createElement(
+	            'h1',
+	            null,
+	            tab.title
+	          );
+	        } else {
+	          tabHeader = React.createElement(
+	            'h2',
+	            null,
+	            tab.title
+	          );
+	        }
+	
+	        return React.createElement(
+	          'li',
+	          { key: i, id: i, onClick: _this.tabClick },
+	          tabHeader
+	        );
+	      }),
+	      React.createElement(
+	        'article',
+	        null,
+	        this.props.tabContent[this.state.selectedTab].content
+	      )
+	    );
+	  },
+	
+	  tabClick: function tabClick(event) {
+	    this.setState({ selectedTab: parseInt(event.currentTarget.id) });
+	  }
+	
+	});
+	
+	module.exports = Tabs;
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	
+	var weatherClock = React.createClass({
+	  displayName: 'weatherClock',
+	
+	  getInitialState: function getInitialState() {
+	    return { currentDate: new Date() };
+	  },
+	
+	  componentDidMount: function componentDidMount() {
+	    var _this = this;
+	
+	    this.handle = setInterval(this.tick, 1000);
+	    var that = this;
+	
+	    navigator.geolocation.getCurrentPosition(function (pos) {
+	      _this.lat = pos.coords.latitude;
+	      _this.lon = pos.coords.longitude;
+	
+	      var url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + _this.lat + '&lon=' + _this.lon + '&appid=645c5d39c7603f17e23fcaffcea1a3c1';
+	      console.log(url);
+	      var request = new XMLHttpRequest();
+	      request.open('GET', url, true);
+	
+	      request.onload = function () {
+	        if (request.status >= 200 && request.status < 400) {
+	          // Success!
+	          var resp = request.responseText;
+	          console.log("Weather data pulled");
+	          console.log(resp);
+	
+	          that.weather = JSON.parse(resp).weather[0].description;
+	          that.tempK = JSON.parse(resp).main.temp;
+	          that.tempF = Math.round(that.tempK * 9 / 5 - 459.67);
+	
+	          console.log(that.weather);
+	          console.log(that.tempF);
+	        } else {
+	          // We reached our target server, but it returned an error
+	          console.log("Got an error pulling weather data");
+	        }
+	      };
+	
+	      request.onerror = function () {
+	        // There was a connection error of some sort
+	        console.log("There was a connection error?");
+	      };
+	
+	      request.send();
+	    });
+	  },
+	
+	  componentWillUnmount: function componentWillUnmount() {
+	    clearInterval(this.handle);
+	    this.handle = 0;
+	  },
+	
+	  tick: function tick() {
+	    this.setState({ currentDate: new Date() });
+	  },
+	
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h1',
+	        null,
+	        'Weather Clock!'
+	      ),
+	      this.state.currentDate.toString(),
+	      React.createElement(
+	        'ul',
+	        null,
+	        React.createElement(
+	          'li',
+	          null,
+	          'Lat: ',
+	          this.lat
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          'Lon: ',
+	          this.lon
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          'Weather: ',
+	          this.weather
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          'Temperature: ',
+	          this.tempF
+	        )
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = weatherClock;
+
+/***/ },
+/* 170 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var React = __webpack_require__(1);
+	
+	var Autocomplete = React.createClass({
+	  displayName: "Autocomplete",
+	
+	  getInitialState: function getInitialState() {
+	    return { initialName: "" };
+	  },
+	
+	  filterNames: function filterNames(event) {
+	    this.setState({ initialName: event.target.value });
+	  },
+	
+	  clickedName: function clickedName(event) {
+	    this.setState({ initialName: event.target.id });
+	  },
+	
+	  render: function render() {
+	    var _this = this;
+	
+	    var matchingNames = this.props.names.filter(function (name) {
+	      return name.includes(_this.state.initialName);
+	    });
+	
+	    return React.createElement(
+	      "aside",
+	      { id: "autocomplete" },
+	      React.createElement(
+	        "h1",
+	        null,
+	        "Autocomplete Widget"
+	      ),
+	      React.createElement("input", { type: "text", onChange: this.filterNames, value: this.state.initialName }),
+	      React.createElement(
+	        "ul",
+	        null,
+	        matchingNames.map(function (name) {
+	          return React.createElement(
+	            "li",
+	            { key: name, id: name, onClick: _this.clickedName },
+	            name
+	          );
+	        })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Autocomplete;
 
 /***/ }
 /******/ ]);
