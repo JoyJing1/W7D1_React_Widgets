@@ -91,7 +91,7 @@ Board.prototype.plantBombs = function () {
     var row = Math.floor(Math.random() * (this.gridSize - 1));
     var col = Math.floor(Math.random() * (this.gridSize - 1));
 
-    tile = this.grid[row][col];
+    let tile = this.grid[row][col];
     if (!tile.bombed) {
       tile.plantBomb();
       totalPlantedBombs++;
