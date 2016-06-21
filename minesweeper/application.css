@@ -31,7 +31,6 @@ p {
 .newGame {
   font-family: sans-serif;
   text-align: center;
-  /*display: inline-block;*/
   align-self: center;
   border: 2px solid gray;
   margin: 20px auto;
@@ -40,16 +39,4 @@ p {
   border-radius: 7px;
   box-shadow: 1px 1px;
   width: 100px;
-}
-
-.bombed {
-
-}
-
-.revealed {
-
-}
-
-.explored {
-
 }

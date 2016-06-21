@@ -29,11 +29,9 @@ const Tabs = React.createClass({
     );
   },
 
-
   tabClick: function(event) {
     this.setState({selectedTab: parseInt(event.currentTarget.id) });
   }
-
 
 });
 

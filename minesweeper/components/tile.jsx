@@ -9,7 +9,6 @@ const Tile = React.createClass({
     this.props.updateGame(this.props.tile, event.altKey);
   },
 
-
   render: function() {
     let tState = "";
 

@@ -2,7 +2,6 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const Game = require('./components/game.jsx');
 
-
 const MinesweeperGame = React.createClass({
   render: function() {
     return(
@@ -15,10 +14,6 @@ const MinesweeperGame = React.createClass({
       </div>
     );
   }
-
-
-
-
 });
 
 document.addEventListener("DOMContentLoaded", () => {
